@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<title>Game Check</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />  
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+		
+		<link rel="apple-touch-icon-precomposed" href="thumbicon.png"/>  		
+		<link rel="apple-touch-startup-image" href="splash.png" />  
+
+		<link rel="stylesheet/less" type="text/css" href="lib/style.less">
+		<script type="text/javascript">
+			less = { env: 'development' };
+		</script>
+		<script type="text/javascript" src="lib/less-1.3.0.min.js"></script>
+		<script type="text/javascript" src="lib/jquery.min.js"></script>
+		<script type="text/javascript" src="lib/jquery.tmpl.min.js"></script>
+		<script type="text/javascript">
+
+			var bigData = {};
+			
+			var delay = (function(){
+				var timer = 0;
+				return function(callback, ms){
+					clearTimeout (timer);
+					timer = setTimeout(callback, ms);
+				};
+			})();
+			
+			var main = function(){}
+			
+			main.prototype.init = function(opts){
+				var _this = this;
+				console.log('init');
+				_this.opts = opts;
+				$.map(_this.opts.consoles,function(i){
+					bigData[i] = new Array();
+				})
+				_this.getAllGames();
+			}
+			
+			main.prototype.getAllGames = function(){
+				var _this = this;
+				var consoles = _this.opts.consoles;
+				var getIt = function(con,p){
+					games.gamesJson(con,p++,function(d){
+						console.log(d);
+					});
+				}
+				for(var i = 0; i < consoles.length; i++){
+
+					var test = new getIt(consoles[i],0);
+					
+				};
+			}
+			
+			main.prototype.gamesJson = function(plat, page, cb){
+				var _this = this;
+				var bust = new Date().getTime();
+				var next;
+				$.getJSON('search.php?console='+plat+'&page='+page+'&cache='+bust,function(r){
+					if(r.next_page){
+						next = JSON.parse('{"' + decodeURI(r.next_page.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}');
+						console.log(next.page);
+						next = next.page;
+					} else {
+						next = false;
+					}
+					$.map(r.products,function(i){
+						i[1] = r.genres[i[1]];
+						bigData[plat].push(i);
+						return i;
+					});
+					console.log(r);
+					if(next){
+						_this.gamesJson(plat,next);
+					}
+				});
+				
+				
+			}
+			
+			var games = new main();
+			
+			$(document).ready(function(){
+
+				games.init({
+					consoles: [
+						'nes',
+						'super-nintendo',
+						'nintendo-64',
+						'gamecube',
+						'wii',
+						'wii-u',
+						'gameboy-color',
+						'gameboy-advance',
+						'nintendo-ds',
+						'nintendo-3ds',
+						'virtual-boy',
+						'playstation',
+						'playstation-2',
+						'playstation-3',
+						'psp',
+						'playstation-vita',
+						'sega-genesis',
+						'sega-master-system',
+						'sega-saturn',
+						'sega-dreamcast',
+						'sega-cd',
+						'sega-game-gear',
+						'atari-2600',
+						'atari-5200',
+						'atari-7800',
+						'atari-400',
+						'atari-lynx',
+						'jaguar',
+						'xbox',
+						'xbox-360',
+						'3do',
+						'cd-i',
+						'colecovision',
+						'commodore-64',
+						'intellivision',
+						'macintosh',
+						'n-gage',
+						'neo-geo',
+						'neo-geo-pocket-color',
+						'odyssey-2',
+						'pc-games',
+						'turbografx-16',
+						'vectrex',
+						'vic-20'
+					]
+				});
+
+				$('.mainsearch').blur(function(e){
+					var thisType = $(this).val();
+					if(thisType != ""){
+						delay(function(){
+						  doSearch(thisType);
+						}, 450);
+					} else {
+						delay(function(){
+						  removeList();
+						}, 150);
+					}
+				}).focus(function(){
+					$(this).val("");
+				}).submit(function(){
+					$(this).blur();
+					return false;
+				}).keyup(function(e){
+					if(e.keyCode == 13){
+						$(this).blur()
+					}
+				});
+				
+			});
+
+			
+		</script>
+		<script id="itemTmpl" type="text/x-jquery-tmpl">
+			<a class="toplevel" href="#detail" data-index="${index}">
+
+			</a>
+		</script>
+
+	</head>
+	<body>
+		<div class="container">
+
+		</div>
+	</body>
+</html>

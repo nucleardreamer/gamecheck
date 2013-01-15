@@ -1,0 +1,94 @@
+body,html{
+				width: 100%;
+				height: 100%;
+				margin:0;padding:0;
+				text-align:center;
+			}
+			div {
+				position: relative;
+			}
+			#container,.top,.mid,.bot{
+				width: 960px;
+			}
+			#container{
+				height: 100%;
+				position: relative;
+				margin: 0 auto;
+				text-align: left;
+			}
+			.top{
+				width: 100%;
+				height: 80px;
+				display: block;
+				background: url('../img/t1.png') no-repeat top left;
+			}
+			.notification{
+				float:right;
+				width: 115px;
+				height: 80px;
+				background: url('../img/t2.png') no-repeat top right;
+			}
+			.mid{
+				width: 100%;
+				height: 220px;
+				display: block;
+				background: url('../img/m1.png') no-repeat top left;
+			}
+			.filter{
+				height: 20px;
+				width: 100%;
+				position: relative;
+				top:220px;
+				background: #ddd url('../img/mb.png') no-repeat center center;
+			}
+			.bot{
+				width: 100%;
+				height: 100%;
+				margin-top:40px;
+			}
+			.col{
+				width: 320px;
+				height: 100%;
+				display: inline-block;
+				vertical-align:top;
+				float:left;
+			}
+			.col:nth-child(1){
+				background: url('../img/g1.png') no-repeat top left;
+			}
+			.col:nth-child(2){
+				background: url('../img/g2.png') no-repeat top left;
+			}
+			.col:nth-child(3){
+				background: url('../img/g3.png') no-repeat top left;
+			}
+			.col:nth-child(4){
+				display: none;
+				background: url('../img/g1.png') no-repeat top left;
+			}
+			.col:nth-child(5){
+				display: none;
+				background: url('../img/g2.png') no-repeat top left;
+			}
+			@media (min-width: 1281px) and (max-width: 1600px) {
+				#container,.top,.mid,.bot{
+					width: 1280px;
+				}
+				.col:nth-child(4){
+					display: inline-block;
+				}
+				.mid{
+					background: url('../img/m2.png') no-repeat top left;
+				}
+			}
+			@media (min-width: 1601px){
+				#container,.top,.mid,.bot{
+					width: 1600px;
+				}
+				.col:nth-child(4),.col:nth-child(5){
+					display: inline-block;
+				}
+				.mid{
+					background: url('../img/m3.png') no-repeat top left;
+				}
+			}

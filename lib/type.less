@@ -1,0 +1,145 @@
+@clight: #666;
+@cmed: #333;
+@cdark: #000;
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+	font-family: Georgia, serif;
+	.type(regular,8,15);
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.font-family(regular){
+	font-family: Georgia, serif;
+}
+.font-family(light){
+	font-family: Georgia, serif;
+}
+.font-size(@_size,@_unit: 1pt){
+	font-size: @_size * @_unit;
+}
+.type(light,@size,@line){
+	@unit: 1pt;
+	.font-family(light);
+	.font-size(@size,@unit);
+	line-height: @line * @unit;
+}
+.type(regular,@size,@line){
+	@unit: 1pt;
+	.font-family(regular);
+	.font-size(@size,@unit);
+	line-height: @line * @unit;
+}
+.container{
+	.type(regular,9,16);
+	& p{font-size: inherit;}
+}
+h1{
+	.type(light,20,30);
+	.cmed;
+}
+h2{
+	.type(regular,18,26);
+	.cdark;
+}
+h3{
+	.type(regular,10,14);
+	.clight;
+}
+h4{
+	.type(light,10,16);
+	.clight;
+}
+p{
+	.type(regular,8,15);
+	.clight;
+}
+a{
+	.type(regular,9,15);
+	font-weight: bold;
+	.cmed;
+}
+
+.clight{color: @clight;}
+.cmed{color: @cmed;}
+.cdark{color: @cdark;}
+
+/*
+.main-nav{
+	.type(light,16,20);
+	.clight;
+}
+.title-1{
+	.type(light,16,20);
+	.cmed;
+}
+.body-1{
+	.type(light,13,18);
+	.clight;
+}
+.body-2{
+	.type(regular,8,15);
+	.clight;
+}
+.post-title{
+	.type(regular,13,16);
+	.cdark;
+}
+.post-body{
+	.type(regular,12,16);
+	.cdark;
+}
+.post-time{
+	.type(regular,10,16);
+	.cdark;
+}
+.tag-1{
+	.type(regular,12,16);
+	.cmed;
+}
+.comment-name{
+	.type(light,12,16);
+	.cdark;
+}
+.text-field{
+	.type(light,12,16);
+	.clight;
+}
+*/

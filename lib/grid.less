@@ -1,0 +1,206 @@
+@doc-width: 960px;
+@grid-cols: 12;
+@grid-col-gutter: 10px;
+
+.grid-calc(width,@_cols,@_pad: 0){
+	width: ((@doc-width/@grid-cols * @_cols) - @grid-col-gutter * 2) - @_pad * 2;
+	padding: @_pad * 1px;
+}
+.grid-calc(pos-left,@_cols){
+	left: (@doc-width/@grid-cols * @_cols);
+}
+.grid-calc(neg-left,@_cols){
+	left: (@doc-width/@grid-cols * @_cols) * -1;
+}
+
+body {
+  min-width: @doc-width;
+}
+
+.container{
+	margin: 10px auto;
+	width: @doc-width;
+	//background-color: #ccc;
+}
+
+.grid{
+	display:inline;
+	float: left;
+	position: relative;
+	margin: @grid-col-gutter;
+	& p{
+		text-align: left;
+	}
+}
+
+.grid_first {margin-left: 0;} .grid_last {margin-right: 0;}
+
+.grid_1 {
+	.grid-calc(width,1);
+}
+
+.grid_2 {
+	.grid-calc(width,2);
+}
+
+.grid_3 {
+	.grid-calc(width,3);
+}
+
+.grid_4,.post.M {
+	.grid-calc(width,4);
+	.full{
+		.grid-calc(width,4,@grid-col-gutter);
+		padding-top: 0;padding-bottom:0;
+	}
+}
+.grid_5 {
+	.grid-calc(width,5);
+}
+
+.grid_6,.post.L {
+	.grid-calc(width,6);
+	.full{
+		.grid-calc(width,6,@grid-col-gutter);
+		padding-top: 0;padding-bottom:0;
+	}
+}
+
+.grid_7 {
+	.grid-calc(width,7);
+}
+
+.grid_8 {
+	.grid-calc(width,8);
+}
+
+.grid_9 {
+	.grid-calc(width,9);
+}
+
+.grid_10 {
+	.grid-calc(width,10);
+}
+
+.grid_11 {
+	.grid-calc(width,11);
+}
+
+.grid_12 {
+	.grid-calc(width,12);
+}
+
+.push_1 {
+	.grid-calc(pos-left,1);
+}
+
+.push_2 {
+	.grid-calc(pos-left,2);
+}
+
+.push_3 {
+	.grid-calc(pos-left,3);
+}
+
+.push_4 {
+	.grid-calc(pos-left,4);
+}
+
+.push_5 {
+	.grid-calc(pos-left,5);
+}
+
+.push_6 {
+	.grid-calc(pos-left,6);
+}
+
+.push_7 {
+	.grid-calc(pos-left,7);
+}
+
+.push_8 {
+	.grid-calc(pos-left,8);
+}
+
+.push_9 {
+	.grid-calc(pos-left,9);
+}
+
+.push_10 {
+	.grid-calc(pos-left,10);
+}
+
+.push_11 {
+	.grid-calc(pos-left,11);
+}
+
+.pull_1 {
+	.grid-calc(neg-left,1);
+}
+
+.pull_2 {
+	.grid-calc(neg-left,2);
+}
+
+.pull_3 {
+	.grid-calc(neg-left,3);
+}
+
+.pull_4 {
+	.grid-calc(neg-left,4);
+}
+
+.pull_5 {
+	.grid-calc(neg-left,5);
+}
+
+.pull_6 {
+	.grid-calc(neg-left,6);
+}
+
+.pull_7 {
+	.grid-calc(neg-left,7);
+}
+
+.pull_8 {
+	.grid-calc(neg-left,8);
+}
+
+.pull_9 {
+	.grid-calc(neg-left,9);
+}
+
+.pull_10 {
+	.grid-calc(neg-left,10);
+}
+
+.pull_11 {
+	.grid-calc(neg-left,11);
+}
+
+/* clearfixes
+----------------------------------------------------------------------------------------------------*/
+
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+.clearfix:before,
+.clearfix:after {
+  content: '\0020';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  zoom: 1;
+}
