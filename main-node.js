@@ -18,7 +18,7 @@ var main = {
       var ind = 0;
       
       var int = setInterval(function(){
-        console.log(Math.floor(ind / _this.queue.length)+'%');
+        console.log(Math.floor(ind / _this.queue.length)+'%: '+ind+' of '+_this.queue.length);
         if(ind < _this.queue.length){
           _this.getGame(_this.queue[ind][0],_this.queue[ind][1],_this.queue[ind][2],function(ret,worked){
               //console.log(ret);
@@ -61,7 +61,7 @@ var main = {
         });
 */
         
-      },3000);      
+      },800);      
     },
     
     init: function(){
@@ -170,9 +170,9 @@ var main = {
                   }, function(err,result) {
                     //console.log(result);
                     if(result !== null){
-                      obj.img = result.img;
-                      obj.upc = result.upc;
-                      obj.date = (result.date) ? moment(result.date,'D MMM YYYY').unix() : '';
+                      obj.img = (result.img) ? result.img.toString() : '';
+                      obj.upc = (result.upc) ? result.upc.toString() : '';
+                      obj.date = (result.date) ? moment(result.date,'D MMM YYYY').unix().toString() : '';
                       console.log(cons + ': ' + gameIndex + ' of ' + _this.json[cons].length);
                       if(cb)cb(obj, true);
                     } else {
@@ -189,7 +189,7 @@ var main = {
           
         });
       });  
-      },4000)
+      },500)
     }
   
 }
