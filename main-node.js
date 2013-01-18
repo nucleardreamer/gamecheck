@@ -18,7 +18,7 @@ var main = {
       var ind = 0;
       
       var int = setInterval(function(){
-        console.log(Math.floor(ind / _this.queue.length)+'%: '+ind+' of '+_this.queue.length);
+        console.log(Math.round(Math.floor(ind / _this.queue.length)) + '%: ' + ind + ' of ' + _this.queue.length);
         if(ind < _this.queue.length){
           _this.getGame(_this.queue[ind][0],_this.queue[ind][1],_this.queue[ind][2],function(ret,which){
               //console.log(ret);
@@ -27,6 +27,9 @@ var main = {
                   if (err) throw err;
                 });
             } else {
+                fs.appendFile('data/all.json', JSON.stringify(ret)+',', function (err) {
+                  if (err) throw err;
+                });
                fs.appendFile('data/all_failed.json', JSON.stringify(ret)+',', function (err) {
                   if (err) throw err;
                 }); 
@@ -35,7 +38,7 @@ var main = {
           
         }
         ind++;
-      },10);      
+      },250);      
     },
     
     init: function(){
@@ -81,6 +84,7 @@ var main = {
                 obj.img = (result.img !== null) ? result.img.src.toString() : '';
                 obj.upc = result.content || '';
                 obj.date = (result.span) ? moment(result.span.content,'D MMM YYYY').unix().toString() : '';
+                obj.more = (result.a) ? result.a.href : '';
                 //console.dir(obj);
                 _this.log(url);
                 cb(obj, true);
