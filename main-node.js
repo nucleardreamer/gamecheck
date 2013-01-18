@@ -1,4 +1,4 @@
-var phantom = require('node-phantom'),
+var yql = require('yql'),
     req = require('request'),
     fs = require('fs'),
     moment = require('moment'),
@@ -20,48 +20,22 @@ var main = {
       var int = setInterval(function(){
         console.log(Math.floor(ind / _this.queue.length)+'%: '+ind+' of '+_this.queue.length);
         if(ind < _this.queue.length){
-          _this.getGame(_this.queue[ind][0],_this.queue[ind][1],_this.queue[ind][2],function(ret,worked){
+          _this.getGame(_this.queue[ind][0],_this.queue[ind][1],_this.queue[ind][2],function(ret,which){
               //console.log(ret);
-              if(worked){
-                fs.appendFile('data/all.json', JSON.stringify(ret)+',', function (err) {
+            if(which){ 
+               fs.appendFile('data/all.json', JSON.stringify(ret)+',', function (err) {
                   if (err) throw err;
-                  
                 });
-              } else {
-                
-                fs.appendFile('data/all_failed.json', JSON.stringify(ret)+',', function (err) {
+            } else {
+               fs.appendFile('data/all_failed.json', JSON.stringify(ret)+',', function (err) {
                   if (err) throw err;
-                  
-                });
-              }
-              
+                }); 
+            }
           });
           
         }
         ind++;
-        
-        
-/*
-        _this.getGame(cons,data[cons][game].safename,game,function(ret,worked){
-            if(worked){
-              fs.appendFile('data/all.json', JSON.stringify(ret)+',', function (err) {
-                if (err) throw err;
-                
-              });
-            } else {
-              
-              fs.appendFile('data/all_failed.json', JSON.stringify(ret)+',', function (err) {
-                if (err) throw err;
-                
-              });
-            }
-            
-            ind++;
-            
-        });
-*/
-        
-      },800);      
+      },10);      
     },
     
     init: function(){
@@ -72,39 +46,16 @@ var main = {
         if (err) {
           return console.log(err);
         }
-        var data = JSON.parse(data);
+        data = JSON.parse(data);
         _this.json = data;
         
         for( cons in data ){
-          
-          for( game in data[cons]){
-
-            
+            for( game in data[cons]){
               _this.queue.push([cons,data[cons][game].safename,game]);
-
           }
-          
         }
         _this.runQueue();
         
-       /*
- _this.getGame('nes','10-yard-fight',0,function(ret,worked){
-          if(worked){
-            fs.appendFile('data/all.json', JSON.stringify(ret)+',', function (err) {
-              if (err) throw err;
-              
-            });
-          } else {
-            
-            fs.appendFile('data/all_failed.json', JSON.stringify(ret)+',', function (err) {
-              if (err) throw err;
-              
-            });
-          }
-        });
-        
-      
-*/
       });
     },
     
@@ -115,81 +66,29 @@ var main = {
     },
     
     getGame: function(cons, safename, gameIndex, cb){
-      var _this = this;
-      var url = 'http://videogames.pricecharting.com/game/'+cons+'/'+safename;
-      _this.log(url);
-      
-      var obj = _this.json[cons][gameIndex];
-      
-      obj.console = cons;
-      
-      //console.log(obj);
-      
-      setTimeout(function(){
-      
-      phantom.create(function(e,ph) {
-        ph.createPage(function(e,page) {
-          //pjs api methods
-          
-          page.open(url,function(e,status) {
-              
-              
-              page.includeJs('http://cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.2/moment.min.js', function(err) {
-
-  
-                setTimeout(function() {
-                  
-                  
+        var _this = this;
+        var url = 'http://videogames.pricecharting.com/game/'+cons+'/'+safename;
+        
+        
+        
+        var obj = _this.json[cons][gameIndex];
+        
+        obj.console = cons;
+                         
+        new yql.exec('select * from html where url="http://videogames.pricecharting.com/game/'+cons+'/'+safename+'" and xpath=\'//div[@id="product_details"]/div[1]/img[1] | //div[@id="product_details"]/p[1]/span[@class="date"] | //div[@id="product_details"]/p[1]/text()[1] | //div[@id="product_details"]/p[1]/a[@href]\'', function(r){
+            var result = r.query.results;
+            if(result){
+                obj.img = (result.img !== null) ? result.img.src.toString() : '';
+                obj.upc = result.content || '';
+                obj.date = (result.span) ? moment(result.span.content,'D MMM YYYY').unix().toString() : '';
+                //console.dir(obj);
+                _this.log(url);
+                cb(obj, true);
+            } else {
                 
-                  return page.evaluate(function() {
-                    
-                    function ___clean(actual){
-                      var newArray = new Array();
-                      for(var i = 0; i<actual.length; i++){
-                    	  if (actual[i]){
-                    		  newArray.push(actual[i]);
-                    		}
-                      }
-                      return newArray;
-                    }
-
-                    
-                    var ___el = $('#product_details');
-                    
-                    var ___upc = ___el.find('p').clone().find('span').remove().end().text().replace(/\n/g,'').split(' ');
-                    
-                    var ___date = ___el.find('.date').text();
-                    
-                    
-                    return {
-                      img: ___el.find('.cover img').attr('src'),
-                      upc: ___clean(___upc)[0],
-                      date: ___date
-                    };
-                  
-                  }, function(err,result) {
-                    //console.log(result);
-                    if(result !== null){
-                      obj.img = (result.img) ? result.img.toString() : '';
-                      obj.upc = (result.upc) ? result.upc.toString() : '';
-                      obj.date = (result.date) ? moment(result.date,'D MMM YYYY').unix().toString() : '';
-                      console.log(cons + ': ' + gameIndex + ' of ' + _this.json[cons].length);
-                      if(cb)cb(obj, true);
-                    } else {
-                      if(cb)cb(obj, false);
-                    }
-                    ph.exit();
-                  });
-                  
-              }, 10);
-
-              });           
-                       
-          });
-          
+                cb(obj, false);
+            }
         });
-      });  
-      },500)
     }
   
 }
