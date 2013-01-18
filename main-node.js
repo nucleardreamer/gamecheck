@@ -2,7 +2,7 @@ var yql = require('yql'),
     req = require('request'),
     fs = require('fs'),
     moment = require('moment'),
-    bigData;
+    bigData, main;
 
 console.log('init');
 
@@ -18,7 +18,7 @@ var main = {
       var ind = 0;
       
       var int = setInterval(function(){
-        console.log(Math.round(Math.floor(ind / _this.queue.length)) + '%: ' + ind + ' of ' + _this.queue.length);
+        console.log(ind + ' of ' + _this.queue.length);
         if(ind < _this.queue.length){
           _this.getGame(_this.queue[ind][0],_this.queue[ind][1],_this.queue[ind][2],function(ret,which){
               //console.log(ret);
@@ -45,19 +45,26 @@ var main = {
     
       var _this = this;
       
-      fs.readFile('console_obj.json', 'utf8', function (err,data) {
+      fs.readFile('data/all_fixed.json', 'utf8', function (err,data) {
         if (err) {
           return console.log(err);
         }
         data = JSON.parse(data);
+
         _this.json = data;
-        
-        for( cons in data ){
-            for( game in data[cons]){
-              _this.queue.push([cons,data[cons][game].safename,game]);
-          }
+        main = [];
+        for( game in data ){
+            if(!data[game].img){
+                _this.queue.push([data[game].console,data[game].safename,game]);
+            } else {
+                main.push(data[game]);
+            }
         }
-        _this.runQueue();
+        console.log(main.length);
+        fs.appendFile('data/all.json', JSON.stringify(main), function (err) {
+            if (err) throw err;
+            _this.runQueue();
+        });
         
       });
     },
@@ -72,27 +79,30 @@ var main = {
         var _this = this;
         var url = 'http://videogames.pricecharting.com/game/'+cons+'/'+safename;
         
+        var obj = _this.json[gameIndex];
         
+        if(!obj.img){
+            
         
-        var obj = _this.json[cons][gameIndex];
-        
-        obj.console = cons;
-                         
-        new yql.exec('select * from html where url="http://videogames.pricecharting.com/game/'+cons+'/'+safename+'" and xpath=\'//div[@id="product_details"]/div[1]/img[1] | //div[@id="product_details"]/p[1]/span[@class="date"] | //div[@id="product_details"]/p[1]/text()[1] | //div[@id="product_details"]/p[1]/a[@href]\'', function(r){
-            var result = r.query.results;
-            if(result){
-                obj.img = (result.img !== null) ? result.img.src.toString() : '';
-                obj.upc = result.content || '';
-                obj.date = (result.span) ? moment(result.span.content,'D MMM YYYY').unix().toString() : '';
-                obj.more = (result.a) ? result.a.href : '';
-                //console.dir(obj);
-                _this.log(url);
-                cb(obj, true);
-            } else {
-                
-                cb(obj, false);
-            }
-        });
+            new yql.exec('select * from html where url="http://videogames.pricecharting.com/game/'+cons+'/'+safename+'" and xpath=\'//div[@id="product_details"]/div[1]/img[1] | //div[@id="product_details"]/p[1]/span[@class="date"] | //div[@id="product_details"]/p[1]/text()[1] | //div[@id="product_details"]/p[1]/a[@href]\'', function(r){
+                var result = r.query.results;
+                if(result){
+                    obj.img = (result.img !== null) ? result.img.src.toString() : '';
+                    obj.upc = result.content || '';
+                    obj.date = (result.span) ? moment(result.span.content,'D MMM YYYY').unix().toString() : '';
+                    obj.more = (result.a) ? result.a.href : '';
+                    //console.dir(obj);
+                    _this.log(url);
+                    cb(obj, true);
+                } else {
+                    
+                    cb(obj, false);
+                }
+            });
+            
+        } else {
+            cb(obj, true);
+        }
     }
   
 }
